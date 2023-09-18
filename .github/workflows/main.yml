@@ -1,5 +1,6 @@
 name: NotifierScript
 on:
+  push:
   schedule:
     - cron: "*/5 * * * *"
 
