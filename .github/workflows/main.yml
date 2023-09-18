@@ -4,10 +4,18 @@ on:
   schedule:
     - cron: "*/5 * * * *"
 
+env:
+  URL: ${{vars.URL}}
+  SIZE: ${{vars.SIZE}}
+  TO: ${{secrets.TO}}
+  FROM: ${{secrets.FROM}}
+  ACCOUNT_SID: ${{secrets.ACCOUNT_SID}}
+  AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+
 jobs:
   build:
+    environment: PROD
     runs-on: ubuntu-latest
-
     steps:
       - name: SCM Checkout
         uses: actions/checkout@v3

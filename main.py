@@ -7,10 +7,10 @@ from twilio.rest import Client
 
 url = os.getenv('URL')
 bike_size = os.getenv('SIZE')
-to = os.getenv('SIZE')
-from_ = os.getenv('SIZE')
-account_sid = os.getenv('SIZE')
-auth_token = os.getenv('SIZE')
+to = os.getenv('TO')
+from_ = os.getenv('FROM')
+account_sid = os.getenv('ACCOUNT_SID')
+auth_token = os.getenv('AUTH_TOKEN')
 
 if url is None:
     raise Exception('URL must be specified')
@@ -41,7 +41,6 @@ try:
     client = Client(account_sid, auth_token)
 
     if 'brevemente' not in output:
-        print('entrei')
         message = client.messages.create(
             to=to,
             from_=from_,
