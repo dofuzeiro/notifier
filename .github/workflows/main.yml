@@ -7,10 +7,12 @@ on:
 env:
   URL: ${{vars.URL}}
   SIZE: ${{vars.SIZE}}
+  SEND_NOTIFICATION: ${{vars.SEND_NOTIFICATION}}
   TO: ${{secrets.TO}}
   FROM: ${{secrets.FROM}}
   ACCOUNT_SID: ${{secrets.ACCOUNT_SID}}
   AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+
 
 jobs:
   build:
@@ -28,7 +30,15 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Run Python Script
+        id: py-script
         run: |
-          python main.py 
+          python main.py
+      - name: Commit and push changes
+        run: |
+          git config user.name "Pipeline Automation"
+          git config user.email "github_actions@github.com"
+          git add results.log
+          git commit -m "Added results from build $GITHUB_RUN_NUMBER to logfile"
+          git push
 
 
