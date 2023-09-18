@@ -1,0 +1,22 @@
+name: NotifierScript
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SCM Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Run Python Script
+        run: |
+          python main.py 
+
+
