@@ -32,7 +32,7 @@ if send_notification is None:
 
 colors = colors.split(',')
 
-for index, url in urls.split(','):
+for index, url in enumerate(urls.split(',')):
     
     command = [
         "curl", "-s", url,
