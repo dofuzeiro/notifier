@@ -6,6 +6,7 @@ on:
 
 env:
   URL: ${{vars.URL}}
+  COLORS: ${{vars.COLORS}}
   SIZE: ${{vars.SIZE}}
   SEND_NOTIFICATION: ${{vars.SEND_NOTIFICATION}}
   TO: ${{secrets.TO}}

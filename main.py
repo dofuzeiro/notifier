@@ -4,7 +4,8 @@ import datetime
 import os
 from twilio.rest import Client
 
-url = os.getenv('URL')
+urls = os.getenv('URL')
+colors = os.getenv('COLORS')
 bike_size = os.getenv('SIZE')
 to = os.getenv('TO')
 from_ = os.getenv('FROM')
@@ -12,8 +13,10 @@ account_sid = os.getenv('ACCOUNT_SID')
 auth_token = os.getenv('AUTH_TOKEN')
 send_notification = os.getenv('SEND_NOTIFICATION')
 
-if url is None:
+if urls is None:
     raise Exception('URL must be specified')
+if colors is None:
+    raise Exception('Color must be specified')
 if bike_size is None:
     raise Exception('Bike size must be specified')
 if to is None:
@@ -27,28 +30,32 @@ if auth_token is None:
 if send_notification is None:
     raise Exception('Send notification must be specified')
 
-command = [
-    "curl", "-s", url,
-    "|",
-    "grep", "-i", "-A", "7", f"\"data-product-size=\\\"{bike_size}\\\"\"",
-    "|",
-    "tail", "-n", "1"
-]
+colors = colors.split(',')
 
-try:
-    result = subprocess.run(" ".join(command), check=True, capture_output=True, shell=True)
-    output = result.stdout.decode('utf-8')
-    client = Client(account_sid, auth_token)
+for index, url in urls.split(','):
+    
+    command = [
+        "curl", "-s", url,
+        "|",
+        "grep", "-i", "-A", "7", f"\"data-product-size=\\\"{bike_size}\\\"\"",
+        "|",
+        "tail", "-n", "1"
+    ]
 
-    if 'brevemente' not in output and send_notification.upper() == 'S':
-        message = client.messages.create(
-            to=to,
-            from_=from_,
-            body=f'Bicicleta disponível tamanho: {bike_size} através do url: {url}'
-        )
+    try:
+        result = subprocess.run(" ".join(command), check=True, capture_output=True, shell=True)
+        output = result.stdout.decode('utf-8')
+        client = Client(account_sid, auth_token)
 
-    with open('results.log', 'a') as file:
-        file.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: {output}")
+        if 'brevemente' not in output and send_notification.upper() == 'S':
+            message = client.messages.create(
+                to=to,
+                from_=from_,
+                body=f'Bicicleta disponível, cor: {colors[index]}, tamanho: {bike_size}, através do url: {url}'
+            )
 
-except Exception as e:
-    raise Exception(f"Error while executing the script: {e}")
+        with open('results.log', 'a') as file:
+            file.write(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: cor: {colors[index]}, {output}")
+
+    except Exception as e:
+        raise Exception(f"Error while executing the script: {e}")
